@@ -1,0 +1,9 @@
+from pydantic import BaseModel, ConfigDict, Field
+
+class UniversityCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=256,
+                      examples=["University of Novi Sad", "University of Belgrade"])
+
+class UniversityResponse(UniversityCreate):
+    model_config = ConfigDict(from_attributes=True)
+    id: int = Field(..., ge=1)
