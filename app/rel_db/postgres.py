@@ -1,5 +1,4 @@
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel, Session, create_engine
 from models import get_all_models
 from core.settings import RelationalSettings, SettingsFactory
 
@@ -18,13 +17,8 @@ def create_db_and_tables(drop_all: bool = False):
             SQLModel.metadata.drop_all(conn)
         SQLModel.metadata.create_all(conn)
 
-SessionLocal = sessionmaker(
-        autoflush=False,
-        bind=engine
-        )
-
 def get_db():
-    db = SessionLocal()
+    db = Session(engine)
     try:
         yield db
     except Exception:
