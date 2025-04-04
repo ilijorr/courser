@@ -2,7 +2,9 @@ from pydantic import BaseModel, Field
 import uuid
 
 class CourseBase(BaseModel):
-    id: uuid.UUID = Field(default_factory = uuid.uuid4)
+    id: uuid.UUID = Field(
+            default_factory = uuid.uuid4,
+            exclude=True)
     uni_id: int = Field(..., ge=1,
                         examples=[15])
     is_summer: bool = Field(...,
