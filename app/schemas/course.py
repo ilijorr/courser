@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 import uuid
 
+from enums.course import CourseCategory
+
 class CourseBase(BaseModel):
     id: uuid.UUID = Field(
             default_factory = uuid.uuid4,
@@ -12,6 +14,8 @@ class CourseBase(BaseModel):
                             examples=[True, False])
     name: str = Field(..., min_length=1, max_length=256,
                       examples=["Algebra", "Object Oriented Programming"])
+    category: CourseCategory = Field(...,
+                                     examples=[CourseCategory.MATHEMATICS])
 
 class CourseRelational(BaseModel):
     ects: int = Field(..., ge=1,

@@ -1,5 +1,5 @@
 import uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, String
 
 from enums.course import CourseCategory
 from models import register_model
@@ -19,4 +19,7 @@ class Course(SQLModel, table=True, extra="ignore"):
     is_summer: bool = Field(...)
     name: str = Field(...)
     ects: int = Field(...)
-    category: CourseCategory = Field()
+    category: CourseCategory = Field(
+            sa_type=String,
+            nullable=False
+            )

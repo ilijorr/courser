@@ -1,6 +1,7 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, String
 
 from models import register_model
+from enums.university import Country
 
 @register_model
 class University(SQLModel, table = True):
@@ -10,3 +11,7 @@ class University(SQLModel, table = True):
             index=True
             )
     name: str = Field(...)
+    country: Country = Field(
+            sa_type=String,
+            nullable=False
+            )

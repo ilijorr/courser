@@ -1,0 +1,66 @@
+from enum import StrEnum
+
+
+class CourseCategory(StrEnum):
+    MATHEMATICS = "Mathematics"
+    COMPUTER_SCIENCE = "Computer Science"
+    PHYSICS = "Physics"
+    CHEMISTRY = "Chemistry"
+    BIOLOGY = "Biology"
+    ENGINEERING = "Engineering"
+    ENVIRONMENTAL_SCIENCE = "Environmental Science"
+    
+    HISTORY = "History"
+    PHILOSOPHY = "Philosophy"
+    LITERATURE = "Literature"
+    LINGUISTICS = "Linguistics"
+    POLITICAL_SCIENCE = "Political Science"
+    ECONOMICS = "Economics"
+    PSYCHOLOGY = "Psychology"
+    SOCIOLOGY = "Sociology"
+    ANTHROPOLOGY = "Anthropology"
+    RELIGIOUS_STUDIES = "Religious Studies"
+    
+    BUSINESS_ADMINISTRATION = "Business Administration"
+    FINANCE = "Finance"
+    ACCOUNTING = "Accounting"
+    MARKETING = "Marketing"
+    MANAGEMENT = "Management"
+    ENTREPRENEURSHIP = "Entrepreneurship"
+    
+    MEDICINE = "Medicine"
+    NURSING = "Nursing"
+    PHARMACY = "Pharmacy"
+    PUBLIC_HEALTH = "Public Health"
+    NUTRITION = "Nutrition"
+    CLINICAL_PSYCHOLOGY = "Clinical Psychology"
+    
+    FINE_ARTS = "Fine Arts"
+    GRAPHIC_DESIGN = "Graphic Design"
+    MUSIC = "Music"
+    THEATER_DRAMA = "Theater & Drama"
+    FILM_STUDIES = "Film Studies"
+    CREATIVE_WRITING = "Creative Writing"
+    
+    EDUCATION = "Education"
+    EARLY_CHILDHOOD_EDUCATION = "Early Childhood Education"
+    SPECIAL_EDUCATION = "Special Education"
+    JOURNALISM = "Journalism"
+    MEDIA_STUDIES = "Media Studies"
+    COMMUNICATIONS = "Communications"
+    
+    INFORMATION_TECHNOLOGY = "Information Technology"
+    DATA_SCIENCE = "Data Science"
+    ARTIFICIAL_INTELLIGENCE = "Artificial Intelligence"
+    CYBERSECURITY = "Cybersecurity"
+    SOFTWARE_ENGINEERING = "Software Engineering"
+    
+    LAW = "Law"
+    CRIMINAL_JUSTICE = "Criminal Justice"
+    INTERNATIONAL_RELATIONS = "International Relations"
+    PUBLIC_ADMINISTRATION = "Public Administration"
+    
+    GENDER_STUDIES = "Gender Studies"
+    URBAN_STUDIES = "Urban Studies"
+    AGRICULTURE = "Agriculture"
+    SPORTS_SCIENCE = "Sports Science"
