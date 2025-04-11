@@ -9,8 +9,4 @@ class University(SQLModel, table = True):
             primary_key=True,
             index=True
             )
-    name: str = Field(
-            ...,
-            min_length=1,
-            max_length=256
-            )
+    name: str = Field(...)

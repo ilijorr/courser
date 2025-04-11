@@ -1,6 +1,7 @@
 import uuid
 from sqlmodel import Field, SQLModel
 
+from enums.course import CourseCategory
 from models import register_model
 
 @register_model
@@ -16,11 +17,6 @@ class Course(SQLModel, table=True, extra="ignore"):
             foreign_key="university.id"
             )
     is_summer: bool = Field(...)
-    name: str = Field(
-            ...,
-            min_length=1
-            )
-    ects: int = Field(
-            ...,
-            ge=1
-            )
+    name: str = Field(...)
+    ects: int = Field(...)
+    category: CourseCategory = Field()
