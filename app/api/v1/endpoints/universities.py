@@ -13,7 +13,8 @@ router = APIRouter(
         )
 
 @router.post("/",
-             status_code=status.HTTP_201_CREATED)
+             status_code=status.HTTP_201_CREATED,
+             response_model=UniversityResponse)
 def create_university(
         university: UniversityCreate,
         rel_db: Annotated[Session, Depends(postgres.get_db)]):
@@ -25,6 +26,7 @@ def create_university(
         rel_db.rollback()
         raise
     rel_db.refresh(uni_model)
+    return UniversityResponse.model_validate(uni_model)
 
 @router.get("/{uni_id}", 
             response_model=UniversityResponse)
@@ -32,6 +34,10 @@ def get_university(
         uni_id: Annotated[int, Path(ge=1)],
         rel_db: Annotated[Session, Depends(postgres.get_db)]):
     db_model = rel_db.get(UniversityModel, uni_id)
+    if db_model is None:
+        raise HTTPException(
+                status_code=404,
+                detail="University not found")
     return UniversityResponse.model_validate(db_model)
 
 @router.put("/{uni_id}",
