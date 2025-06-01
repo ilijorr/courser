@@ -49,9 +49,13 @@ def update_university(
         rel_db: Annotated[Session, Depends(postgres.get_db)]):
     db_model = rel_db.get(UniversityModel, uni_id)
     if db_model is None:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="university not found")
+        return HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="university not found")
 
-    db_model.name = university.name
+    update_data = university.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_model, field, value)
 
     rel_db.add(db_model)
     rel_db.commit()
