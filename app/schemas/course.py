@@ -6,7 +6,7 @@ from enums.course import CourseCategory
 class CourseBase(BaseModel):
     id: uuid.UUID = Field(
             default_factory = uuid.uuid4,
-            exclude=True,
+            #exclude=True,
             description="uuid generated with every request.")
     uni_id: int = Field(..., ge=1,
                         examples=[3])
