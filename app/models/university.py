@@ -1,5 +1,6 @@
+from typing import List
 from pydantic import field_validator
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 from models import register_model
 from enums.university import Country
@@ -15,13 +16,17 @@ class University(SQLModel, table = True):
     country: Country = Field(
             nullable=False
             )
+    courses: List["Course"] = Relationship(
+            back_populates="university",
+            cascade_delete=True
+            )
 
     @field_validator('country', mode='before')
     @classmethod
     def validate_country(cls, v):
         if isinstance(v, str):
             try:
-                return Country(v)
+                return Country(v.upper())
             except ValueError:
                 raise ValueError(f"invalid country string, expected name of country but got {v}")
         elif isinstance(v, Country):

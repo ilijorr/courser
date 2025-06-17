@@ -1,8 +1,10 @@
 import uuid
-from sqlmodel import Field, SQLModel, String
+from sqlmodel import Field, Relationship, SQLModel, String
 
 from enums.course import CourseCategory
 from models import register_model
+from models.university import University
+from schemas.course import CourseCreate, CourseBase, CourseRelational
 
 @register_model
 class Course(SQLModel, table=True, extra="ignore"):
@@ -14,7 +16,11 @@ class Course(SQLModel, table=True, extra="ignore"):
             )
     uni_id: int = Field(
             ...,
-            foreign_key="university.id"
+            foreign_key="university.id",
+            ondelete="CASCADE"
+            )
+    university: University = Relationship(
+            back_populates="courses"
             )
     is_summer: bool = Field(...)
     name: str = Field(...)
