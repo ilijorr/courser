@@ -75,7 +75,7 @@ def test_post_invalid_country(client: TestClient):
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     
 
-def test_get(client: TestClient):
+def test_get_one(client: TestClient):
     name = "Univerzitet u Novom Sadu"
     country = "Serbia"
 
@@ -96,6 +96,9 @@ def test_get(client: TestClient):
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["name"] == name
     assert response.json()["country"] == country
+
+def test_get_all(client: TestClient):
+    pass
 
 def test_get_unexistent(client: TestClient):
     response = client.get(
