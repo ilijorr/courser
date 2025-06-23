@@ -4,10 +4,6 @@ import uuid
 from enums.course import CourseCategory
 
 class CourseBase(BaseModel):
-    id: uuid.UUID = Field(
-            default_factory = uuid.uuid4,
-            #exclude=True,
-            description="uuid generated with every request.")
     uni_id: int = Field(..., ge=1,
                         examples=[3])
     is_summer: bool = Field(...,
@@ -27,3 +23,12 @@ class CourseVector(BaseModel):
 
 class CourseCreate(CourseBase, CourseRelational, CourseVector):
     pass
+
+class Course(CourseCreate):
+    id: uuid.UUID = Field(
+            default_factory = uuid.uuid4,
+            #exclude=True,
+            description="uuid generated with every request.",
+            json_schema_extra={"hidden": True},
+            validate_default=True)
+
