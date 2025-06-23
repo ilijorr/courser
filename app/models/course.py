@@ -4,7 +4,6 @@ from sqlmodel import Field, Relationship, SQLModel, String
 from enums.course import CourseCategory
 from models import register_model
 from models.university import University
-from schemas.course import CourseCreate, CourseBase, CourseRelational
 
 @register_model
 class Course(SQLModel, table=True, extra="ignore"):
