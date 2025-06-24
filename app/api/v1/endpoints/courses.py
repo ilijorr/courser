@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from sqlalchemy.exc import NoResultFound
 from enums.course import CourseCategory
 from schemas.course import Course, CourseCreate, CourseRelational
-from fastapi import APIRouter, Depends, HTTPException, Path, status, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, status, Query
 from sqlmodel import Session, select
 from langchain_core.vectorstores import VectorStore
 
@@ -18,14 +18,14 @@ router = APIRouter(
         dependencies=[]
         )
 
-def to_document(course: Course) -> Document:
+def to_document(course: Course) -> tuple[Document, str]:
     fields_to_exclude = set(CourseRelational.model_fields.keys())
     data = course.model_dump(exclude=fields_to_exclude)
-    data["id"] = str(data["id"])
+    id = str(data.pop("id"))
     return Document(
             page_content=data.pop("description"),
             metadata=data
-            )
+            ), id
 
 @router.post("/",
              status_code=status.HTTP_201_CREATED,
@@ -45,7 +45,8 @@ async def create_course(
                 detail=f"error while inserting into relational db"
                 )
     try:
-        await vec_db.aadd_documents([to_document(course)])
+        doc, id = to_document(course)
+        await vec_db.aadd_documents([doc], id=id)
     except Exception as e:
         raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -57,7 +58,7 @@ async def create_course(
              status_code=status.HTTP_201_CREATED,
              response_model=List[UUID])
 async def create_course_batch(
-        courses_without_id: List[CourseCreate],
+        courses_without_id: Annotated[List[CourseCreate], Body(...)],
         rel_db: Annotated[Session, Depends(postgres.get_db)],
         vec_db: Annotated[VectorStore, Depends(pinecone.get_db)]
         ):
