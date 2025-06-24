@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, List, Tuple
 from uuid import UUID
 from langchain_core.documents import Document
 from sqlalchemy.exc import NoResultFound
@@ -18,14 +18,14 @@ router = APIRouter(
         dependencies=[]
         )
 
-def to_document(course: Course) -> tuple[Document, str]:
+def to_document(course: Course) -> Tuple[Document, str]:
     fields_to_exclude = set(CourseRelational.model_fields.keys())
     data = course.model_dump(exclude=fields_to_exclude)
-    id = str(data.pop("id"))
+    id_str = str(data.pop("id"))
     return Document(
             page_content=data.pop("description"),
             metadata=data
-            ), id
+            ), id_str
 
 @router.post("/",
              status_code=status.HTTP_201_CREATED,
@@ -36,21 +36,26 @@ async def create_course(
         vec_db: Annotated[VectorStore, Depends(pinecone.get_db)]
         ):
     course = Course(**course.model_dump())
-    try:
-        rel_db.add(CourseModel(**course.model_dump()))
-        rel_db.commit()
-    except Exception as e:
-        raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"error while inserting into relational db"
-                )
+    rel_db.add(CourseModel(**course.model_dump()))
+
     try:
         doc, id = to_document(course)
-        await vec_db.aadd_documents([doc], id=id)
+        await vec_db.aadd_documents([doc], ids=[id])
     except Exception as e:
+        rel_db.rollback()
         raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"error while upserting vector to db, {e}"
+                )
+
+    try:
+        rel_db.commit()
+    except Exception as e:
+        rel_db.rollback()
+        vec_db.delete(ids=[id])
+        raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"error while inserting into relational db"
                 )
     return course.id
 
@@ -72,7 +77,8 @@ async def create_course_batch(
                 detail=f"error while inserting into relational db, {e}"
                 )
     try:
-        await vec_db.aadd_documents([to_document(course) for course in courses])
+        documents, ids = map(list, zip(*[to_document(course) for course in courses]))
+        await vec_db.aadd_documents(documents, ids=ids)
     except Exception as e:
         raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
