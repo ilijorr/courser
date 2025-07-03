@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from .endpoints import universities, courses
+
+from .endpoints import universities, courses, search
 
 router = APIRouter(
         prefix="/v1",
@@ -7,3 +8,4 @@ router = APIRouter(
 
 router.include_router(universities.router)
 router.include_router(courses.router)
+router.include_router(search.router)
